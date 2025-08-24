@@ -1,5 +1,5 @@
-<form [formGroup]="login" (ngSubmit)="formSubmit()">
-    <input type="text" formControlName="username">
+<form [formGroup]="login" (ngSubmit)="formSubmit()" method="post" enctype="application/x-www-form-urlencoded">
+    <input type="email" formControlName="email">
     <input type="password" formControlName="password">
     <input type="submit">
 </form>
