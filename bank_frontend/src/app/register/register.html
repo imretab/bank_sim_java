@@ -1,1 +1,8 @@
-<p>register works!</p>
+<form [formGroup]="register" (ngSubmit)="formSubmit()">
+    <input type="email" formControlName="email">
+    <input type="text" formControlName="username">
+    <input type="password" formControlName="password">
+    <input type="submit">
+</form>
+
+<a routerLink="/login">Login</a>
