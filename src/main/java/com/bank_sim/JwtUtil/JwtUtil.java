@@ -1,20 +1,26 @@
 package com.bank_sim.JwtUtil;
 
+import com.bank_sim.model.Login;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.stereotype.Component;
 
 import java.security.Key;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
+@Component
 public class JwtUtil {
     private final Key key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
     private final long expirationMs = 1000*60*60;
-    public String GenerateToken(String email){
+    public String GenerateToken(Login user){
         return Jwts.builder()
-                .setSubject(email)
+                .setSubject(user.getUsername())
+                .setId(user.getId())
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + expirationMs))
                 .signWith(key)

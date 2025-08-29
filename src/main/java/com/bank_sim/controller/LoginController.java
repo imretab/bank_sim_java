@@ -5,6 +5,7 @@ import com.bank_sim.model.Login;
 import com.bank_sim.Repository.LoginRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.argon2.*;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -22,7 +23,6 @@ public class LoginController {
     @Autowired
     private JwtUtil jwtUtil;
     private Argon2PasswordEncoder passwordEncoder = Argon2PasswordEncoder.defaultsForSpringSecurity_v5_8();
-
     @PostMapping("/login")
     public ResponseEntity<Map<String,String>> tryLogin(
             @RequestBody Login login
@@ -32,12 +32,10 @@ public class LoginController {
 
         if (storedLogin == null ||
                 !passwordEncoder.matches(login.getPassword(), storedLogin.getPassword())) {
-            return ResponseEntity.status(401).body(Map.of("message", "Bad credentials"));
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("message", "Bad credentials"));
         }
 
-        // TODO: Replace with real JWT
-        String jwt = jwtUtil.GenerateToken(storedLogin.getEmail());
-
+        String jwt = jwtUtil.GenerateToken(storedLogin);
         return ResponseEntity.ok(Map.of("accessToken", jwt));
     }
     @PostMapping("/register")

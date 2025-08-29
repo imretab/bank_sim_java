@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import {jwtDecode,  JwtPayload } from 'jwt-decode';
+import {jwtDecode, JwtPayload} from 'jwt-decode';
 
 @Injectable({
   providedIn: 'root'
@@ -9,6 +9,18 @@ export class Auth {
 
   getToken(): string | null {
     return localStorage.getItem(this.tokenKey);
+  }
+
+  getLoggedInUser(): JwtPayload | null {
+    const token = localStorage.getItem('accessToken');
+    if (!token) return null;
+  
+    try {
+      return jwtDecode<JwtPayload>(token);
+    } catch (err) {
+      console.error("Invalid token", err);
+      return null;
+    }
   }
 
   isTokenValid(): boolean {
@@ -23,7 +35,7 @@ export class Auth {
       const expirationDate = new Date(0);
       expirationDate.setUTCSeconds(decoded.exp);
 
-      return expirationDate > new Date(); // valid if in the future
+      return expirationDate > new Date();
     } catch (e) {
       return false;
     }

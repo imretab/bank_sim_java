@@ -20,6 +20,7 @@ public class Login {
         this.username = username;
         this.password = password;
     }
+    public String getId(){return Long.toString(id);}
     public String getEmail() {
         return email;
     }
