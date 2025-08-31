@@ -16,10 +16,10 @@ public class SecurityConfig implements WebMvcConfigurer {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
         http
-                .csrf(csrf -> csrf.disable()) // CSRF doesn't apply for stateless APIs
-                .cors(cors -> {}) // enable CORS
+                .csrf(csrf -> csrf.disable())
+                .cors(cors -> {})
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/login", "/api/register").permitAll()
+                        .requestMatchers("/api/login", "/api/register","/api/messages/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form.disable()) // disable form login
