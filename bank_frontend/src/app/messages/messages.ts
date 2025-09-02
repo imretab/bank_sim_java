@@ -1,19 +1,24 @@
 import { HttpClient } from '@angular/common/http';
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Auth } from '../auth';
+import { CommonModule } from '@angular/common';
 @Component({
   selector: 'app-messages',
-  imports: [],
+  imports: [CommonModule],
   templateUrl: './messages.html',
   styleUrl: './messages.css'
 })
-export class Messages {
-  constructor(private http: HttpClient, private auth: Auth){}
+export class Messages implements OnInit {
+  constructor(private http: HttpClient){}
+  data: any[] = [];
   ngOnInit(){
-    let id = this.auth.getLoggedInUser()?.jti;
-    this.http.get(`http://localhost:8080/api/messages/${id}`).subscribe({
+    this.http.get<any[]>(`http://localhost:8080/api/messages/`, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('accessToken')}`
+      }}).subscribe({
       next: (resp) =>{
-        console.log(resp);
+        this.data = resp;
+        console.log(this.data)
       }
     });
   }

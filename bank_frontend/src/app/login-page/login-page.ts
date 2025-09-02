@@ -21,19 +21,16 @@ export class LoginPage {
     let email = this.login.controls.email.value;
     let password = this.login.controls.password.value;
     let tryUser = { email, password }
-    this.http.post<{accessToken: string, username: string}>('http://localhost:8080/api/login',tryUser).subscribe(
+    this.http.post<{accessToken: string}>('http://localhost:8080/api/login',tryUser).subscribe(
       {
         next: (response) =>{
           localStorage.setItem('accessToken',response.accessToken);
-          localStorage.setItem('username',response.username);
           this.router.navigate(['/home']);
         },
         error:(err)=>{
           console.error("error: ",err);
         }
       }
-      
-      
     );
   }
 }

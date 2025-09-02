@@ -1,1 +1,11 @@
-<p>messages works!</p>
+<div class="messagesContainer">
+    <h2>My Messages</h2>
+    <div class="tableHeader">
+      <div class="cell indexCell">#</div>
+      <div class="cell messageCell">Message</div>
+    </div>
+    <div *ngFor="let value of data; let i = index" class="tableRow">
+      <div class="cell indexCell">{{ i + 1 }}</div>
+      <div class="cell messageCell">{{ value.message }}</div>
+    </div>
+  </div>

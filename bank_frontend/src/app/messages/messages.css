@@ -1,0 +1,59 @@
+.messagesContainer {
+    max-width: 700px;
+    margin: 2rem auto;
+    padding: 1.5rem;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #fff;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+  
+  .messagesContainer h2 {
+    text-align: center;
+    margin-bottom: 1rem;
+    color: #222;
+    font-weight: 600;
+  }
+  
+  .tableHeader,
+  .tableRow {
+    display: flex;
+    border-bottom: 1px solid #eee;
+    padding: 0.7rem 0;
+    align-items: center;
+  }
+  
+  .tableHeader {
+    font-weight: 700;
+    background-color: #f9f9f9;
+    border-bottom: 2px solid #ccc;
+  }
+  
+  .cell {
+    padding: 0 1rem;
+    word-break: break-word;
+  }
+  
+  /* Fixed widths for columns */
+  .indexCell {
+    flex: 0 0 40px;
+    text-align: center;
+    color: #555;
+  }
+  
+  .messageCell {
+    flex: 1;
+    color: #333;
+  }
+  
+  /* Alternate row coloring */
+  .tableRow:nth-child(even) {
+    background-color: #fafafa;
+  }
+  
+  /* Hover effect */
+  .tableRow:hover {
+    background-color: #e6f7ff;
+    cursor: default;
+  }
