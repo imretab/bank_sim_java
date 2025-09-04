@@ -26,7 +26,7 @@ public class MessageController {
 
     @Autowired
     LoginRepository loginRepository;
-    @GetMapping("/messages/")
+    @GetMapping("/messages")
     public ResponseEntity<?> getMessages(){
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         Login user = (Login) auth.getPrincipal();
