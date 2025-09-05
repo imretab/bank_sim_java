@@ -12,7 +12,7 @@ import { Router } from '@angular/router';
 export class ProfilePage implements OnInit {
   data: any;
   update!: FormGroup;
-
+  message: any;
   constructor(private http: HttpClient, private router: Router){}
   ngOnInit(){
     this.http.get<any>(`http://localhost:8080/api/profile`, {
@@ -34,10 +34,30 @@ export class ProfilePage implements OnInit {
     });
   }
   formSubmit(){
+    this.message = "";
     const email = this.update.controls['email'].value;
     const username = this.update.controls['username'].value;
     const password = this.update.controls['password'].value;
     let tryUpdate = {email,username, password};
-    console.log(tryUpdate);
+    this.http.put(`http://localhost:8080/api/updateProfile`,tryUpdate,{
+      headers:{
+        Authorization: `Bearer ${localStorage.getItem('accessToken')}`
+      }
+    }).subscribe({
+      next: (resp) =>{
+        console.log(resp);
+        this.message = resp;
+        this.router.navigate(["/home"]).then(
+          ()=>
+          {
+            window.location.reload()
+          }
+        )
+      },
+      error:(err)=>{
+        console.error(err);
+        this.message = err.error.message;
+      }
+    })
   }
 }

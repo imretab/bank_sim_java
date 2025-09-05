@@ -24,6 +24,7 @@ import java.util.*;
 @RequestMapping("/api")
 @CrossOrigin(origins = "http://localhost:4200")
 public class LoginController {
+    private final String responseKey = "message";
     private AccountNumberGenerator accountNumberGenerator;
     @Autowired
     private AuthenticationManager authenticationManager;
@@ -67,7 +68,7 @@ public class LoginController {
         if(login.getEmail().isEmpty() ||
                 login.getUsername().isEmpty()||
                 login.getPassword().isEmpty()){
-            return ResponseEntity.status(409).body(Map.of("message","Problem with registration due to missing data(s)"));
+            return ResponseEntity.status(409).body(Map.of(responseKey,"Problem with registration due to missing data(s)"));
         }
         Login newUser = new Login(login.getEmail(),login.getUsername(),"{argon2}"+encpwd);
         loginRepository.save(newUser);
@@ -75,22 +76,23 @@ public class LoginController {
         String generatedAccountNumber = accountNumberGenerator.generateAccountNumber(15);
         AccountNumber newAccount = new AccountNumber(generatedAccountNumber,newUser);
         accountNumberRepository.save(newAccount);
-        return ResponseEntity.ok().body(Map.of("message","Registration Success"));
+        return ResponseEntity.ok().body(Map.of(responseKey,"Registration Success"));
     }
     @PutMapping("/updateProfile")
     public ResponseEntity<?> updateProfile(@RequestBody Login login){
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         Login user = (Login) auth.getPrincipal();
         if(login.getEmail().isEmpty() ||
-                login.getUsername().isEmpty()||
+                login.getUsername().isEmpty() ||
                 login.getPassword().isEmpty()){
-            return ResponseEntity.status(409).body(Map.of("message","Problem with changes due to missing data(s)"));
+            return ResponseEntity.status(409).body(Map.of(responseKey,"Problem with changes due to missing data(s)"));
         }
         Login updated = loginRepository.findById(user.getId()).orElse(null);
         String encpwd = "{argon2}"+passwordEncoder.encode(login.getPassword());
         updated.setEmail(login.getEmail());
         updated.setUsername(login.getUsername());
         updated.setPassword(encpwd);
-        return new ResponseEntity<>(loginRepository.save(updated), HttpStatus.OK);
+        loginRepository.save(updated);
+        return ResponseEntity.status(200).body(Map.of(responseKey,"Updates successful"));
     }
 }

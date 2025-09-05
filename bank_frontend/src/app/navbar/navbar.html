@@ -14,10 +14,15 @@
             <a class="nav-link" routerLink="/login">Login</a>
           </li>
           }
-        </ul> 
+          @if(!this.removeLi()){
+          <li class="nav-item">
+            <a class="nav-link">Transaction</a>
+          </li>
+        }
+        </ul>
       </div>
-      <ul class="navbar-nav me-auto flex-nowrap">
       @if(!this.removeLi()){
+        <ul class="navbar-nav me-auto flex-nowrap">
         <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
             Options
@@ -26,11 +31,10 @@
             <li><a class="dropdown-item" routerLink="/messages"><i class="bi bi-envelope"></i> Check messages</a></li>
             <li><a class="dropdown-item" routerLink="/profile"><i class="bi bi-person"></i> Profile</a></li>
             <li><hr class="dropdown-divider"></li>
-            <li class="nav-item"><a class="nav-link" (click)="logout()" href="#"><i class="bi bi-box-arrow-right"></i> Logout</a></li>
+            <li><a class="dropdown-item" (click)="logout()" href="#"><i class="bi bi-box-arrow-right"></i> Logout</a></li>
           </ul>
         </li>
-
-      }
     </ul>
+  }
     </div>
   </nav>

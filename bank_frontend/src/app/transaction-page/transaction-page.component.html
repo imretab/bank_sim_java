@@ -1,0 +1,12 @@
+<form [formGroup]="transaction" (ngSubmit)="formSubmit()">
+    <div class="mb-3">
+        <label for="accountNumber" class="form-label">Account Number</label>
+        <input type="text" formControlName="accountNumber" id="accountNumber" class="form-control">
+    </div>
+
+    <div class="mb-3">
+        <label for="amount" class="form-label">Amount</label>
+        <input type="text" id="amount" formControlName="amount" class="form-control">
+    </div>
+    <button type="submit" class="btn btn-primary">Submit</button>
+</form>

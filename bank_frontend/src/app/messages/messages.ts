@@ -12,7 +12,7 @@ export class Messages implements OnInit {
   constructor(private http: HttpClient){}
   data: any[] = [];
   ngOnInit(){
-    this.http.get<any[]>(`http://localhost:8080/api/messages/`, {
+    this.http.get<any[]>(`http://localhost:8080/api/messages`, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem('accessToken')}`
       }}).subscribe({

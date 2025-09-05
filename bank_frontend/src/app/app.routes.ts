@@ -6,13 +6,14 @@ import { HomePage } from './home-page/home-page';
 import { AuthGuard } from './auth-guard';
 import { Messages } from './messages/messages';
 import { ProfilePage } from './profile-page/profile-page';
-
+import { TransactionPageComponent } from './transaction-page/transaction-page.component';
 export const routes: Routes = [
   { path: 'login', component: LoginPage },
   { path: 'register', component: Register },
   { path:'home',component: HomePage, canActivate:[AuthGuard]},
   { path:'messages',component:Messages, canActivate:[AuthGuard]},
-  {path:'profile',component:ProfilePage,canActivate:[AuthGuard]}
+  {path:'profile',component:ProfilePage,canActivate:[AuthGuard]},
+  {path:'transaction',component:TransactionPageComponent,canActivate:[AuthGuard]}
 ];
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
