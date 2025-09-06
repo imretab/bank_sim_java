@@ -24,10 +24,8 @@ public class MessageController {
     @Autowired
     MessageRepository messageRepository;
 
-    @Autowired
-    LoginRepository loginRepository;
     @GetMapping("/messages")
-    public ResponseEntity<?> getMessages(){
+    public ResponseEntity<List<Message>> getMessages(){
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         Login user = (Login) auth.getPrincipal();
         List<Message> messages = messageRepository.findByLoginId(user.getId());

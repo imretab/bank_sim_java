@@ -2,7 +2,6 @@ package com.bank_sim.Repository;
 
 import java.util.List;
 
-import com.bank_sim.model.Login;
 import com.bank_sim.model.Message;
 import org.springframework.data.jpa.repository.JpaRepository;
 

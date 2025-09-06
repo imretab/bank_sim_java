@@ -93,6 +93,6 @@ public class LoginController {
         updated.setUsername(login.getUsername());
         updated.setPassword(encpwd);
         loginRepository.save(updated);
-        return ResponseEntity.status(200).body(Map.of(responseKey,"Updates successful"));
+        return ResponseEntity.status(200).body(Map.of(responseKey,"Update successful"));
     }
 }

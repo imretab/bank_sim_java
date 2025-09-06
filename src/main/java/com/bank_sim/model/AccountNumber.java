@@ -1,5 +1,7 @@
 package com.bank_sim.model;
 
+import java.math.BigDecimal;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
@@ -11,16 +13,20 @@ public class AccountNumber {
     private long id;
 
     @Column(name = "number")
-    private String account_number;
+    private String accountNumber;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "account_id",nullable = false)
     @JsonIgnore
     private Login login;
+
+    @Column(name = "balance")
+    private BigDecimal balance;
     public AccountNumber(){}
-    public AccountNumber(String account_number, Login login){
-        this.account_number = account_number;
+    public AccountNumber(String accountNumber, Login login){
+        this.accountNumber = accountNumber;
         this.login = login;
+        this.balance = new BigDecimal(300000); //example starting balance
     }
     public long getId() {
         return id;
@@ -30,19 +36,27 @@ public class AccountNumber {
         this.id = id;
     }
 
-    public String getAccount_number() {
-        return account_number;
-    }
-
-    public void setAccount_number(String account_number) {
-        this.account_number = account_number;
-    }
-
     public Login getLogin() {
         return login;
     }
 
     public void setLogin(Login login) {
         this.login = login;
+    }
+
+    public String getAccountNumber() {
+        return accountNumber;
+    }
+
+    public void setAccountNumber(String accountNumber) {
+        this.accountNumber = accountNumber;
+    }
+
+    public BigDecimal getBalance() {
+        return balance;
+    }
+
+    public void setBalance(BigDecimal balance) {
+        this.balance = balance;
     }
 }

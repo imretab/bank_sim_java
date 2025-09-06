@@ -33,4 +33,16 @@ public class Message {
     public void setMessage(String message) {
         this.message = message;
     }
+
+    public Login getLogin() {
+        return login;
+    }
+
+    public void setLogin(Login login) {
+        this.login = login;
+    }
+    public Message(String message, Login login){
+        this.message = message;
+        this.login = login;
+    }
 }
