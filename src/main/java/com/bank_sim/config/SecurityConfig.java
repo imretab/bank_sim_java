@@ -29,7 +29,11 @@ public class SecurityConfig implements WebMvcConfigurer {
                 .cors(cors -> {})
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/login", "/api/register").permitAll()
-                        .requestMatchers("/api/messages","/api/profile","/api/updateProfile","/api/transaction").authenticated()
+                        .requestMatchers("/api/messages",
+                                "/api/profile",
+                                "/api/updateProfile",
+                                "/api/transaction",
+                                "/api/balance").authenticated()
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form.disable())

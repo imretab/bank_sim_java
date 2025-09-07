@@ -13,7 +13,6 @@ export class HomePage {
   value: string | undefined;
   ngOnInit() {
     this.user = this.auth.getLoggedInUser();
-    console.log("Logged-in user:", this.user);
     this.value = this.user.sub;
   }
 

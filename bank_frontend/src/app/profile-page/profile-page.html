@@ -1,4 +1,4 @@
-<form [formGroup]="update" (ngSubmit)="formSubmit()">
+<form *ngIf="update" [formGroup]="update" (ngSubmit)="formSubmit()">
     <div class="mb-3">
         <label for="email" class="form-label">Email address</label>
         <input type="email" formControlName="email" id="email" class="form-control">
@@ -15,18 +15,19 @@
     </div>
     <button type="submit" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#messageModal">Submit</button>
 </form>
+
 <div class="modal fade" id="messageModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h1 class="modal-title fs-5" id="exampleModalLabel">Message</h1>
+        <h1 class="modal-title fs-5" id="exampleModalLabel">{{title}}</h1>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
         <p>{{message}}</p>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">OK</button>
+        <button type="button" class="btn btn-primary" data-bs-dismiss="modal" onclick="window.location.reload()">OK</button>
       </div>
     </div>
   </div>

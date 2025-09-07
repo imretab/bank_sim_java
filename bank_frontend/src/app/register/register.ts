@@ -1,7 +1,9 @@
 import { HttpClient } from '@angular/common/http';
-import { Component } from '@angular/core';
+import { Component, ElementRef, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+
+declare var bootstrap: any;
 
 @Component({
   selector: 'app-register',
@@ -10,6 +12,9 @@ import { Router } from '@angular/router';
   styleUrls: ['./register.css']
 })
 export class Register {
+  @ViewChild('messageModal') messageModal!:ElementRef;
+  message: any;
+  title:any;
   register = new FormGroup({
     email: new FormControl('', [Validators.required, Validators.email]),
     username: new FormControl('', [Validators.required]),
@@ -32,6 +37,10 @@ export class Register {
       },
       error: (err) => {
         console.error('Registration failed:', err);
+        this.message = err.error.message;
+        this.title="Registration failed";
+        const modal = new bootstrap.Modal(this.messageModal.nativeElement);
+        modal.show();
       }
     });
   }

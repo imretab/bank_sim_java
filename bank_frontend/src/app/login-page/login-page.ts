@@ -1,16 +1,20 @@
 import { HttpClient } from '@angular/common/http';
-import { Component } from '@angular/core';
+import { Component, ElementRef, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { AppRoutingModule } from '../app.routes';
+
+declare var bootstrap: any;
 
 @Component({
   selector: 'app-login-page',
-  imports:[ReactiveFormsModule],
+  imports: [ReactiveFormsModule],
   templateUrl: './login-page.html',
   styleUrl: './login-page.css'
 })
 export class LoginPage {
+  @ViewChild('messageModal') messageModal!: ElementRef;
+  message: any;
+  title:any;
   login = new FormGroup(
     {
       email: new FormControl('',[Validators.required,Validators.email]),
@@ -29,6 +33,10 @@ export class LoginPage {
         },
         error:(err)=>{
           console.error("error: ",err);
+          this.message = err.error;
+          this.title = "Login failed";
+          const modal = new bootstrap.Modal(this.messageModal.nativeElement);
+          modal.show();
         }
       }
     );

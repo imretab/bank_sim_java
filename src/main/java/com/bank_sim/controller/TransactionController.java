@@ -42,35 +42,42 @@ public class TransactionController {
     @PostMapping("/transaction")
     public ResponseEntity<Map<String,String>> makeTransaction(@RequestBody Map<String,String> accountNumber){
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        Login user = (Login) auth.getPrincipal();
-        if(accountNumber == null){
-            return ResponseEntity.status(409).body(Map.of("message","Account values are empty"));
+        Login currentUser = (Login) auth.getPrincipal();
+        if (accountNumber == null || accountNumber.get("accNum") == null || accountNumber.get("amount") == null) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(Map.of("message", "Account values are empty or invalid"));
         }
-        AccountNumber findNumber = accountNumberRepository.findByAccountNumber(accountNumber.get("accNum"));
-        if(findNumber == null){
+        String accNum = accountNumber.get("accNum");
+        AccountNumber recipientAccount  = accountNumberRepository.findByAccountNumber(accNum);
+        if(recipientAccount == null){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("message","Account number wasn't found"));
         }
-        AccountNumber getUser = accountNumberRepository.findById(user.getId()).orElse(null);
-        BigDecimal amount = new BigDecimal(accountNumber.get("amount"));
-        BigDecimal fromAccount = findNumber.getBalance();
+        AccountNumber senderAccount = accountNumberRepository.findById(currentUser.getId()).orElse(null);
+        if(recipientAccount.getLogin().getId() == currentUser.getId()){
+            return ResponseEntity.status(400).body(Map.of("message","You can't send money to yourself"));
+        }
 
-        BigDecimal toAccount = getUser.getBalance();
-        BigDecimal addBalance = fromAccount.add(amount);
-        findNumber.setBalance(addBalance);
-        BigDecimal subtractBalance = toAccount.subtract(amount);
-        getUser.setBalance(subtractBalance);
+        BigDecimal amount = new BigDecimal(accountNumber.get("amount"));
+        if(amount.compareTo(BigDecimal.ZERO) < 0){
+            return ResponseEntity.status(400).body(Map.of("message","Sorry, you cannot enter a negative number"));
+        }
+        if(senderAccount.getBalance().compareTo(amount) < 0){
+            return ResponseEntity.status(400).body(Map.of("message","Insufficent funds"));
+        }
+        recipientAccount.setBalance(recipientAccount.getBalance().add(amount));
+
+        senderAccount.setBalance(senderAccount.getBalance().subtract(amount));
 
         CustomMessageFormatter customMessageFormatter = new CustomMessageFormatter();
-        String fromGenerated = customMessageFormatter.GenerateMessage(user,true);
-        String toGenerated = customMessageFormatter.GenerateMessage(findNumber.getLogin(),true);
-        Message from = new Message(fromGenerated,user);
-        Message to = new Message(toGenerated,findNumber.getLogin());
-        Transaction newTransaction = new Transaction(user,findNumber.getLogin(),amount);
+        Message from = new Message(customMessageFormatter.GenerateMessage(currentUser,true,senderAccount.getBalance()),
+                currentUser);
+        Message to = new Message(customMessageFormatter.GenerateMessage(recipientAccount.getLogin(),true,recipientAccount.getBalance()),
+                recipientAccount.getLogin());
+        Transaction newTransaction = new Transaction(currentUser,recipientAccount.getLogin(),amount);
         transactionRepository.save(newTransaction);
         messageRepository.save(from);
         messageRepository.save(to);
-        accountNumberRepository.save(getUser);
-        accountNumberRepository.save(findNumber);
+        accountNumberRepository.save(senderAccount);
+        accountNumberRepository.save(recipientAccount);
         return ResponseEntity.ok().body(Map.of("message","Transaction success"));
     }
 }
