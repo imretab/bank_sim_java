@@ -1,11 +1,8 @@
 package com.bank_sim;
 
-import com.bank_sim.service.AccountNumberGenerator;
+import com.bank_sim.helper.AccountNumberGenerator;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.security.crypto.argon2.Argon2PasswordEncoder;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 class BankSimApplicationTests {

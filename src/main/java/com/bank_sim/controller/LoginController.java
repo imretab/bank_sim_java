@@ -1,12 +1,9 @@
 package com.bank_sim.controller;
 
 import com.bank_sim.JwtUtil.JwtUtil;
-import com.bank_sim.Repository.AccountNumberRepository;
-import com.bank_sim.model.AccountNumber;
 import com.bank_sim.model.Login;
-import com.bank_sim.Repository.LoginRepository;
 
-import com.bank_sim.service.AccountNumberGenerator;
+import com.bank_sim.service.LoginService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,8 +11,8 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.argon2.*;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
@@ -24,18 +21,13 @@ import java.util.*;
 @RequestMapping("/api")
 @CrossOrigin(origins = "http://localhost:4200")
 public class LoginController {
-    private final String responseKey = "message";
-    private AccountNumberGenerator accountNumberGenerator;
+
     @Autowired
     private AuthenticationManager authenticationManager;
     @Autowired
-    LoginRepository loginRepository;
-    @Autowired
-    AccountNumberRepository accountNumberRepository;
-    @Autowired
     private JwtUtil jwtUtil;
-    private Argon2PasswordEncoder passwordEncoder = Argon2PasswordEncoder.defaultsForSpringSecurity_v5_8();
-
+    @Autowired
+    private LoginService loginService;
     @GetMapping("/profile")
     public ResponseEntity<?> profile(){
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -64,35 +56,10 @@ public class LoginController {
     }
     @PostMapping("/register")
     public ResponseEntity<Map<String,String>> register(@RequestBody Login login){
-        String encpwd = passwordEncoder.encode(login.getPassword());
-        if(login.getEmail().isEmpty() ||
-                login.getUsername().isEmpty()||
-                login.getPassword().isEmpty()){
-            return ResponseEntity.status(409).body(Map.of(responseKey,"Problem with registration due to missing data(s)"));
-        }
-        Login newUser = new Login(login.getEmail(),login.getUsername(),"{argon2}"+encpwd);
-        loginRepository.save(newUser);
-        accountNumberGenerator = new AccountNumberGenerator();
-        String generatedAccountNumber = accountNumberGenerator.generateAccountNumber(15);
-        AccountNumber newAccount = new AccountNumber(generatedAccountNumber,newUser);
-        accountNumberRepository.save(newAccount);
-        return ResponseEntity.ok().body(Map.of(responseKey,"Registration Success"));
+        return loginService.register(login);
     }
     @PutMapping("/updateProfile")
-    public ResponseEntity<?> updateProfile(@RequestBody Login login){
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        Login user = (Login) auth.getPrincipal();
-        if(login.getEmail().isEmpty() ||
-                login.getUsername().isEmpty() ||
-                login.getPassword().isEmpty()){
-            return ResponseEntity.status(409).body(Map.of(responseKey,"Problem with changes due to missing data(s)"));
-        }
-        Login updated = loginRepository.findById(user.getId()).orElse(null);
-        String encpwd = "{argon2}"+passwordEncoder.encode(login.getPassword());
-        updated.setEmail(login.getEmail());
-        updated.setUsername(login.getUsername());
-        updated.setPassword(encpwd);
-        loginRepository.save(updated);
-        return ResponseEntity.status(200).body(Map.of(responseKey,"Update successful"));
+    public ResponseEntity<?> updateProfile(@RequestBody Login login,@AuthenticationPrincipal Login authUser){
+        return loginService.updateDetails(login, authUser);
     }
 }

@@ -1,4 +1,4 @@
-package com.bank_sim.service;
+package com.bank_sim.helper;
 
 import com.bank_sim.model.Login;
 
