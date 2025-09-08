@@ -25,7 +25,7 @@ public class TransactionService {
     @Autowired
     MessageRepository messageRepository;
     public ResponseEntity<Map<String,String>> processTransaction(Map<String,String> accountNumber, Login currentUser){
-        if (accountNumber == null || accountNumber.get("accNum") == null || accountNumber.get("amount") == null) {
+        if (accountNumber == null || accountNumber.get("accNum") == null || accountNumber.get("accNum").isEmpty() || accountNumber.get("amount") == null || accountNumber.get("amount").isEmpty()) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(Map.of("message", "Account values are empty or invalid"));
         }
         String accNum = accountNumber.get("accNum");
@@ -43,7 +43,7 @@ public class TransactionService {
             return ResponseEntity.status(400).body(Map.of("message","Sorry, you cannot enter a negative number"));
         }
         if(senderAccount.getBalance().compareTo(amount) < 0){
-            return ResponseEntity.status(400).body(Map.of("message","Insufficent funds"));
+            return ResponseEntity.status(400).body(Map.of("message","Insufficient funds"));
         }
         recipientAccount.setBalance(recipientAccount.getBalance().add(amount));
 

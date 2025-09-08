@@ -21,11 +21,6 @@ import java.util.*;
 @RequestMapping("/api")
 @CrossOrigin(origins = "http://localhost:4200")
 public class LoginController {
-
-    @Autowired
-    private AuthenticationManager authenticationManager;
-    @Autowired
-    private JwtUtil jwtUtil;
     @Autowired
     private LoginService loginService;
     @GetMapping("/profile")
@@ -37,22 +32,7 @@ public class LoginController {
     }
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody Login loginRequest) {
-        try {
-            Authentication authentication = authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(
-                            loginRequest.getEmail(),
-                            loginRequest.getPassword()
-                    )
-            );
-
-            Login user = (Login) authentication.getPrincipal();
-            String token = jwtUtil.GenerateToken(user);
-
-            return ResponseEntity.ok(Map.of("accessToken", token));
-
-        } catch (AuthenticationException e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
-        }
+        return loginService.login(loginRequest);
     }
     @PostMapping("/register")
     public ResponseEntity<Map<String,String>> register(@RequestBody Login login){
